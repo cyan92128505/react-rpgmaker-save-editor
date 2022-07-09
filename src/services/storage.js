@@ -9,7 +9,13 @@ class StorageService {
   }
 
   getAllFile = () =>
-    Object.keys(window.localStorage).filter((e) => /.*File[0-9]+/.test(e));
+    Object.keys(window.localStorage)
+      .filter((e) => /.*File[0-9]+/.test(e))
+      .sort((a, b) => {
+        let _aIndex = +`${a.split("File")[1]}`;
+        let _bIndex = +`${b.split("File")[1]}`;
+        return _aIndex - _bIndex;
+      });
 
   getKey = (index) => {
     if (this._key.length !== 0) {
