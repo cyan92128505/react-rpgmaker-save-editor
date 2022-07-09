@@ -23,9 +23,7 @@ const SaveButton = ({ save = {}, index = 0 }) => {
 
   return (
     <>
-      <Button colorScheme="teal" variant="link" onClick={_onClick}>
-        Save
-      </Button>
+      <Button onClick={_onClick}>SAVE</Button>
     </>
   );
 };

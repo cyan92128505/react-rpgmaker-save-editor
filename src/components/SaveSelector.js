@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Flex, Select, Button } from "@chakra-ui/react";
 import StorageService from "../services/storage";
+import SaveButton from "./SaveButton";
 
 const storageService = new StorageService();
 
-const SaveSelector = ({ onSave = () => {}, onSelectIndex = () => {} }) => {
+const SaveSelector = ({
+  save = {},
+  index = 0,
+  onSave = () => {},
+  onSelectIndex = () => {},
+}) => {
   const [keyList, setKeyList] = useState(() => []);
+
   const _reset = () => {
     setKeyList(storageService.getAllFile());
   };
+
   useEffect(_reset, []);
 
   const _handleChange = (event) => {
@@ -32,6 +40,7 @@ const SaveSelector = ({ onSave = () => {}, onSelectIndex = () => {} }) => {
         ))}
       </Select>
       <Button onClick={_reset}>RESET</Button>
+      <SaveButton index={index} save={save} />
     </Flex>
   );
 };
