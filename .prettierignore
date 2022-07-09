@@ -7,3 +7,7 @@ public
 **/.svn
 **/.hg
 **/node_modules
+
+/node_modules
+node_modules
+public/games/**
