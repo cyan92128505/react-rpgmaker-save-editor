@@ -1,9 +1,13 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { Flex } from "@chakra-ui/react";
+import { Flex, List, ListItem } from "@chakra-ui/react";
+import VariableTerm from "./VariableTerm";
 
-const Viewer = ({ save = {}, onSave = () => {} }) => {
+const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
   const editor = useRef();
+  const [settingTermList, setSettingTermList] = useState([
+    <ListItem></ListItem>,
+  ]);
 
   const { setContainer } = useCodeMirror({
     container: editor.current,
@@ -24,15 +28,44 @@ const Viewer = ({ save = {}, onSave = () => {} }) => {
     if (editor.current) {
       setContainer(editor.current);
     }
-  }, [editor.current]);
+  }, [save, setContainer]);
+
+  useEffect(() => {
+    if (setting["variables"] && save["variables"]) {
+      let _list = [];
+      for (let index = 0; index < setting["variables"].length; index++) {
+        if (
+          !setting["variables"][index] ||
+          setting["variables"][index].length === 0
+        ) {
+          continue;
+        }
+
+        _list.push(
+          <ListItem key={index} p={2}>
+            <VariableTerm
+              index={index}
+              save={save}
+              onSave={onSave}
+              setting={setting}
+            ></VariableTerm>
+          </ListItem>
+        );
+      }
+      setSettingTermList(_list);
+    }
+  }, [save, setting]);
 
   return (
-    <Flex>
-      <div
-        ref={editor}
-        style={{ overflowY: "scroll", height: "64vh", width: "100vw" }}
-      />
-    </Flex>
+    <div>
+      <Flex>
+        <div
+          ref={editor}
+          style={{ overflowY: "scroll", height: "50vh", width: "100vw" }}
+        />
+      </Flex>
+      <List>{settingTermList}</List>
+    </div>
   );
 };
 
