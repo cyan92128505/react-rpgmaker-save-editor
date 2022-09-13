@@ -19,7 +19,11 @@ const VariableTerm = ({
   };
 
   useEffect(() => {
-    if (setting["variables"] && save["variables"]) {
+    if (
+      setting["variables"] &&
+      save["variables"] &&
+      save["variables"]["_data"]["@a"][index]
+    ) {
       setValue(save["variables"]["_data"]["@a"][index]);
     }
   }, [save, setting, index]);

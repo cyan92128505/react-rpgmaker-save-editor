@@ -1,12 +1,16 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { Flex, List, ListItem } from "@chakra-ui/react";
+import { Flex, List, ListItem, Box } from "@chakra-ui/react";
 import VariableTerm from "./VariableTerm";
+import SwitchTerm from "./SwitchTerm";
 
 const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
   const editor = useRef();
-  const [settingTermList, setSettingTermList] = useState([
-    <ListItem></ListItem>,
+  const [variableTermList, setVariableTermList] = useState([
+    <ListItem key={"No Variable"}>No Variable</ListItem>,
+  ]);
+  const [swtichTermList, setSwtichTermList] = useState([
+    <ListItem key={"No Swtich"}>No Swtich</ListItem>,
   ]);
 
   const { setContainer } = useCodeMirror({
@@ -24,13 +28,7 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
     },
   });
 
-  useEffect(() => {
-    if (editor.current) {
-      setContainer(editor.current);
-    }
-  }, [save, setContainer]);
-
-  useEffect(() => {
+  const _applyVariableList = useCallback(() => {
     if (setting["variables"] && save["variables"]) {
       let _list = [];
       for (let index = 0; index < setting["variables"].length; index++) {
@@ -42,7 +40,7 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
         }
 
         _list.push(
-          <ListItem key={index} p={2}>
+          <ListItem key={"variable_" + index} p={2}>
             <VariableTerm
               index={index}
               save={save}
@@ -52,19 +50,76 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
           </ListItem>
         );
       }
-      setSettingTermList(_list);
+      setVariableTermList(_list);
     }
-  }, [save, setting]);
+  }, [onSave, save, setting]);
+
+  const _applySwitchList = useCallback(() => {
+    if (setting["switches"] && save["switches"]) {
+      let _list = [];
+      for (let index = 0; index < setting["switches"].length; index++) {
+        if (
+          !setting["variables"][index] ||
+          setting["variables"][index].length === 0
+        ) {
+          continue;
+        }
+
+        _list.push(
+          <ListItem key={"switch_" + index} p={2}>
+            <SwitchTerm
+              index={index}
+              save={save}
+              onSave={onSave}
+              setting={setting}
+            ></SwitchTerm>
+          </ListItem>
+        );
+      }
+      setSwtichTermList(_list);
+    }
+  }, [onSave, save, setting]);
+
+  useEffect(() => {
+    _applySwitchList();
+    _applyVariableList();
+  }, [onSave, save, setting, _applyVariableList, _applySwitchList]);
+
+  useEffect(() => {
+    if (editor.current) {
+      setContainer(editor.current);
+    }
+  }, [save, setContainer]);
 
   return (
     <div>
-      <Flex>
+      <Flex key="editor">
         <div
           ref={editor}
-          style={{ overflowY: "scroll", height: "50vh", width: "100vw" }}
+          style={{ overflowY: "scroll", height: "40vh", width: "100vw" }}
         />
       </Flex>
-      <List>{settingTermList}</List>
+      <Box h="8px" w="100%"></Box>
+      <Flex>
+        <Box
+          flex="1"
+          shadow="md"
+          borderWidth="1px"
+          height="50vh"
+          overflowY="scroll"
+        >
+          <List>{variableTermList}</List>
+        </Box>
+        <Box
+          flex="1"
+          shadow="md"
+          borderWidth="1px"
+          height="50vh"
+          overflowY="scroll"
+        >
+          <List>{swtichTermList}</List>
+        </Box>
+      </Flex>
     </div>
   );
 };

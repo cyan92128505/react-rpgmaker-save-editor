@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Flex, Select, Button, InputGroup } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Flex, Select, Button, InputGroup, Box } from "@chakra-ui/react";
 import StorageService from "../services/storage";
 import SaveButton from "./SaveButton";
 
 const storageService = new StorageService();
+const settingKey = "editor_setting";
 
 const SaveSelector = ({
   index = 0,
@@ -16,9 +17,16 @@ const SaveSelector = ({
   const [keyList, setKeyList] = useState(() => []);
   const inputRef = useRef(null);
 
-  const _reset = () => {
+  const _reset = useCallback(() => {
     setKeyList(storageService.getAllFile());
-  };
+  }, []);
+
+  const _applySetting = useCallback(() => {
+    const _setting = storageService.rawLoad(settingKey);
+    if (_setting) {
+      onSetting(_setting);
+    }
+  }, [onSetting]);
 
   const _handleChange = (event) => {
     if (!event.target.value || event.target.value.length < 1) {
@@ -38,12 +46,14 @@ const SaveSelector = ({
   const _handleSetting = async (value) => {
     if (value.target.files && value.target.files?.[0]) {
       let _rawJSON = await _readFile(value.target.files?.[0]);
+      let _json = JSON.parse(_rawJSON);
       onSetting(JSON.parse(_rawJSON));
+      storageService.rawSave(settingKey, _json);
     }
   };
 
-  const _readFile = (file) => {
-    return new Promise((resolve, reject) => {
+  const _readFile = (file) =>
+    new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.onload = () => {
         resolve(fileReader.result);
@@ -53,9 +63,11 @@ const SaveSelector = ({
       };
       fileReader.readAsText(file);
     });
-  };
 
-  useEffect(_reset, []);
+  useEffect(() => {
+    _reset();
+    _applySetting();
+  }, [_reset, _applySetting]);
 
   return (
     <Flex align="center" justify="center">
@@ -68,15 +80,17 @@ const SaveSelector = ({
       </Select>
       <Button onClick={_reset}>RESET</Button>
       <SaveButton index={index} save={save} />
-      <InputGroup onClick={_handleClick}>
-        <input
-          onChange={_handleSetting}
-          type="file"
-          ref={inputRef}
-          hidden
-        ></input>
-        <Button>IMPORT SETTING</Button>
-      </InputGroup>
+      <Box>
+        <InputGroup onClick={_handleClick}>
+          <input
+            onChange={_handleSetting}
+            type="file"
+            ref={inputRef}
+            hidden
+          ></input>
+          <Button>IMPORT SETTING</Button>
+        </InputGroup>
+      </Box>
     </Flex>
   );
 };

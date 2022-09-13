@@ -39,6 +39,18 @@ class StorageService {
     let _rawJSON = LZString.decompressFromBase64(_raw);
     return JSON.parse(_rawJSON);
   };
+
+  rawSave = (key, json) => {
+    window.localStorage.setItem(key, JSON.stringify(json));
+  };
+
+  rawLoad = (key) => {
+    try {
+      return JSON.parse(window.localStorage.getItem(key));
+    } catch (error) {
+      return null;
+    }
+  };
 }
 
 export default StorageService;
