@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { Flex, List, ListItem, Box } from "@chakra-ui/react";
+import { Flex, List, ListItem, Box, Button } from "@chakra-ui/react";
 import VariableTerm from "./VariableTerm";
 import SwitchTerm from "./SwitchTerm";
 
@@ -12,19 +12,24 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
   const [swtichTermList, setSwtichTermList] = useState([
     <ListItem key={"No Swtich"}>No Swtich</ListItem>,
   ]);
+  const [viewerContent, setViewerContent] = useState("");
+
+  const saveViewerEdit = () => {
+    try {
+      let _value = JSON.parse(viewerContent);
+      onSave(_value);
+    } catch (error) {}
+  };
 
   const { setContainer } = useCodeMirror({
     container: editor.current,
-    value: JSON.stringify(save, null, 4),
+    value: viewerContent,
     options: {
       tabSize: 2,
       mode: "json",
     },
     onChange: (value) => {
-      try {
-        let json = JSON.parse(value);
-        onSave(json);
-      } catch (error) {}
+      setViewerContent(value);
     },
   });
 
@@ -87,6 +92,7 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
 
   useEffect(() => {
     if (editor.current) {
+      setViewerContent(JSON.stringify(save, null, 4));
       setContainer(editor.current);
     }
   }, [save, setContainer]);
@@ -99,7 +105,7 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
           style={{ overflowY: "scroll", height: "40vh", width: "100vw" }}
         />
       </Flex>
-      <Box h="8px" w="100%"></Box>
+      <Button onClick={saveViewerEdit}>APPLY MODIFY</Button>
       <Flex>
         <Box
           flex="1"
