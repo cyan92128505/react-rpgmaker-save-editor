@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Flex, Select, Button, InputGroup, Box } from "@chakra-ui/react";
+import { Flex, Select, IconButton, InputGroup, Box } from "@chakra-ui/react";
+import { RepeatIcon, SettingsIcon } from "@chakra-ui/icons";
 import StorageService from "../services/storage";
 import SaveButton from "./SaveButton";
 
@@ -15,7 +16,6 @@ const SaveSelector = ({
   onSetting = () => {},
 }) => {
   const [keyList, setKeyList] = useState(() => []);
-  const [settingState, setSettingState] = useState("gray");
   const inputRef = useRef(null);
 
   const _reset = useCallback(() => {
@@ -28,11 +28,6 @@ const SaveSelector = ({
       onSetting(_setting);
     }
   }, [onSetting]);
-  const _setSettingState = () => {
-    const _state = setting["variables"] && setting["variables"].length > 0;
-
-    setSettingState(_state ? "blue" : "gray");
-  };
 
   const _handleChange = (event) => {
     if (!event.target.value || event.target.value.length < 1) {
@@ -55,7 +50,6 @@ const SaveSelector = ({
       let _json = JSON.parse(_rawJSON);
       onSetting(JSON.parse(_rawJSON));
       storageService.rawSave(settingKey, _json);
-      _setSettingState();
     }
   };
 
@@ -91,7 +85,13 @@ const SaveSelector = ({
           </option>
         ))}
       </Select>
-      <Button onClick={_reset}>RESET</Button>
+      <IconButton
+        variant="outline"
+        colorScheme="gray"
+        onClick={_reset}
+        icon={<RepeatIcon></RepeatIcon>}
+        aria-label="RESET"
+      ></IconButton>
       <SaveButton index={index} save={save} />
       <Box>
         <InputGroup onClick={_handleClick}>
@@ -101,7 +101,12 @@ const SaveSelector = ({
             ref={inputRef}
             hidden
           ></input>
-          <Button colorScheme={settingState}>IMPORT SETTING</Button>
+          <IconButton
+            variant="outline"
+            colorScheme="gray"
+            icon={<SettingsIcon></SettingsIcon>}
+            aria-label="IMPORT SETTING"
+          ></IconButton>
         </InputGroup>
       </Box>
     </Flex>

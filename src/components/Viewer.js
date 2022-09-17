@@ -101,24 +101,16 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
   return (
     <div>
       <Flex key="editor">
-        <Box
-          flex="1"
-          shadow="md"
-          borderWidth="1px"
-          height="45vh"
-          overflowY="scroll"
-        >
-          <div ref={editor} />
-        </Box>
-        <Box
-          flex="1"
-          shadow="md"
-          borderWidth="1px"
-          height="45vh"
-          overflowY="scroll"
-        >
+        <Box flex="1" shadow="md" borderWidth="1px" height="45vh">
           <Stack p={2}>
             <Button onClick={saveViewerEdit}>APPLY MODIFY</Button>
+            <Box height="36vh" overflowY="scroll">
+              <div ref={editor} />
+            </Box>
+          </Stack>
+        </Box>
+        <Box flex="1" shadow="md" borderWidth="1px" height="45vh">
+          <Stack p={2}>
             <GoldModify save={save} onSave={onSave} />
           </Stack>
         </Box>

@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, useToast } from "@chakra-ui/react";
+import { useToast, IconButton } from "@chakra-ui/react";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import StorageService from "../services/storage";
 
 const storageService = new StorageService();
@@ -23,7 +24,13 @@ const SaveButton = ({ save = {}, index = 0 }) => {
 
   return (
     <>
-      <Button onClick={_onClick}>SAVE</Button>
+      <IconButton
+        variant="outline"
+        colorScheme="gray"
+        icon={<CheckCircleIcon></CheckCircleIcon>}
+        onClick={_onClick}
+        aria-label="SAVE"
+      ></IconButton>
     </>
   );
 };
