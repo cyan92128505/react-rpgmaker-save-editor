@@ -18,7 +18,7 @@ const GoldModify = ({ save = {}, onSave = () => {} }) => {
   const _hundleSave = () => {
     if (save["party"] && save["party"]["_gold"]) {
       const _target = save;
-      _target["party"]["_gold"] = gold;
+      _target["party"]["_gold"] = parseInt(gold);
       onSave(_target);
     }
   };
