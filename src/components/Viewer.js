@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { Flex, List, ListItem, Box, Button } from "@chakra-ui/react";
+import { Box, Button, Flex, List, ListItem, Stack } from "@chakra-ui/react";
 import VariableTerm from "./VariableTerm";
 import SwitchTerm from "./SwitchTerm";
+import GoldModify from "./GoldModify";
 
 const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
   const editor = useRef();
@@ -100,18 +101,34 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
   return (
     <div>
       <Flex key="editor">
-        <div
-          ref={editor}
-          style={{ overflowY: "scroll", height: "40vh", width: "100vw" }}
-        />
+        <Box
+          flex="1"
+          shadow="md"
+          borderWidth="1px"
+          height="45vh"
+          overflowY="scroll"
+        >
+          <div ref={editor} />
+        </Box>
+        <Box
+          flex="1"
+          shadow="md"
+          borderWidth="1px"
+          height="45vh"
+          overflowY="scroll"
+        >
+          <Stack p={2}>
+            <Button onClick={saveViewerEdit}>APPLY MODIFY</Button>
+            <GoldModify save={save} onSave={onSave} />
+          </Stack>
+        </Box>
       </Flex>
-      <Button onClick={saveViewerEdit}>APPLY MODIFY</Button>
       <Flex>
         <Box
           flex="1"
           shadow="md"
           borderWidth="1px"
-          height="50vh"
+          height="45vh"
           overflowY="scroll"
         >
           <List>{variableTermList}</List>
@@ -120,7 +137,7 @@ const Viewer = ({ save = {}, onSave = () => {}, setting = {} }) => {
           flex="1"
           shadow="md"
           borderWidth="1px"
-          height="50vh"
+          height="45vh"
           overflowY="scroll"
         >
           <List>{swtichTermList}</List>
