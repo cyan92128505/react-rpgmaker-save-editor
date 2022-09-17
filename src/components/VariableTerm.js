@@ -20,12 +20,7 @@ const VariableTerm = ({
   const [saveState, setSaveState] = useState("gary");
 
   const _handleStateChange = useCallback(() => {
-    try {
-      let _target = JSON.parse(value);
-      let _source = JSON.parse(olderValue);
-
-      setSaveState(isEqual(_target, _source) ? "gary" : "blue");
-    } catch (error) {}
+    setSaveState(isEqual(value, olderValue) ? "gary" : "blue");
   }, [value, olderValue]);
 
   const _handleChange = async (event) => {
@@ -34,11 +29,21 @@ const VariableTerm = ({
 
   const _handleSave = () => {
     let _target = save;
-    let _numberValue = parseInt(value);
+    let _value = value;
 
-    _target["variables"]["_data"]["@a"][index] = JSON.parse(
-      _numberValue | value
-    );
+    try {
+      _value = JSON.parse(_value);
+    } catch (error) {
+      _value = value;
+    }
+
+    try {
+      _value = parseInt(_value);
+    } catch (error) {
+      _value = value;
+    }
+
+    _target["variables"]["_data"]["@a"][index] = _value;
 
     setOlderValue(_target["variables"]["_data"]["@a"][index]);
     onSave(_target);
@@ -50,7 +55,11 @@ const VariableTerm = ({
       save["variables"] &&
       save["variables"]["_data"]["@a"][index]
     ) {
-      let _value = JSON.stringify(save["variables"]["_data"]["@a"][index]);
+      let _value = save["variables"]["_data"]["@a"][index];
+      if (typeof _value === "object") {
+        _value = JSON.stringify(_value);
+      }
+
       setValue(_value);
       setOlderValue(_value);
     }
