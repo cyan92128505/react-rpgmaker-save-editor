@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Footer from "./Footer";
 import SaveSelector from "./SaveSelector";
 import Viewer from "./Viewer";
 
@@ -17,6 +18,7 @@ const Layout = () => {
         onSetting={setSetting}
       ></SaveSelector>
       <Viewer save={save} onSave={setSave} setting={setting} />
+      <Footer setting={setting}></Footer>
     </div>
   );
 };
