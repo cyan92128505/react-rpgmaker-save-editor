@@ -15,6 +15,7 @@ const SaveSelector = ({
   onSetting = () => {},
 }) => {
   const [keyList, setKeyList] = useState(() => []);
+  const [settingState, setSettingState] = useState("gray");
   const inputRef = useRef(null);
 
   const _reset = useCallback(() => {
@@ -27,6 +28,11 @@ const SaveSelector = ({
       onSetting(_setting);
     }
   }, [onSetting]);
+  const _setSettingState = () => {
+    const _state = setting["variables"] && setting["variables"].length > 0;
+
+    setSettingState(_state ? "blue" : "gray");
+  };
 
   const _handleChange = (event) => {
     if (!event.target.value || event.target.value.length < 1) {
@@ -49,6 +55,7 @@ const SaveSelector = ({
       let _json = JSON.parse(_rawJSON);
       onSetting(JSON.parse(_rawJSON));
       storageService.rawSave(settingKey, _json);
+      _setSettingState();
     }
   };
 
@@ -72,6 +79,12 @@ const SaveSelector = ({
   return (
     <Flex align="center" justify="center">
       <Select placeholder="Select Save" onChange={_handleChange}>
+        <option key="RPG Global" value="RPG Global">
+          RPG Global
+        </option>
+        <option key="RPG Config" value="RPG Config">
+          RPG Config
+        </option>
         {keyList.map((keyName) => (
           <option key={keyName.toString()} value={keyName.toString()}>
             {keyName}
@@ -88,7 +101,7 @@ const SaveSelector = ({
             ref={inputRef}
             hidden
           ></input>
-          <Button>IMPORT SETTING</Button>
+          <Button colorScheme={settingState}>IMPORT SETTING</Button>
         </InputGroup>
       </Box>
     </Flex>

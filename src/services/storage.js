@@ -18,13 +18,30 @@ class StorageService {
       });
 
   getKey = (index) => {
-    if (this._key.length !== 0) {
-      ["RPG", this._key, `File${index}`].join(" ");
+    let _specialIndex = `File${index}`;
+    if (/Global/.test(index)) {
+      _specialIndex = "Global";
     }
-    return ["RPG", `File${index}`].join(" ");
+
+    if (/Config/.test(index)) {
+      _specialIndex = "Config";
+    }
+
+    if (this._key.length !== 0) {
+      ["RPG", this._key, _specialIndex].join(" ");
+    }
+    return ["RPG", _specialIndex].join(" ");
   };
 
   parseIndexFromKey = (rawKeyString) => {
+    if (/Global/.test(rawKeyString)) {
+      return "Global";
+    }
+
+    if (/Config/.test(rawKeyString)) {
+      return "Config";
+    }
+
     return `${rawKeyString}`.split("File").reverse()[0];
   };
 
