@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import SaveSelector from "./SaveSelector";
 import Viewer from "./Viewer";
 
-const Editor = () => {
+const Layout = () => {
   const [index, setIndex] = useState();
   const [save, setSave] = useState();
   const [setting, setSetting] = useState();
 
   return (
-    <div data-testid="Editor">
+    <div data-testid="Layout">
       <SaveSelector
         index={index}
         onSelectIndex={setIndex}
@@ -21,4 +21,4 @@ const Editor = () => {
   );
 };
 
-export default Editor;
+export default Layout;

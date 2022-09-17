@@ -1,10 +1,10 @@
 import "./App.css";
-import Ediotor from "./components/Editor";
+import Layout from "./components/Layout";
 
 function App() {
   return (
     <>
-      <Ediotor />
+      <Layout />
     </>
   );
 }
